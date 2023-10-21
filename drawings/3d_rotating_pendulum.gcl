@@ -1,0 +1,39 @@
+number pi 3.141592653589793
+expression pi_2 { pi / 2 }
+expression pi_4 { pi / 4 }
+expression pi_8 { pi / 8 }
+expression pi_16 { pi / 16 }
+
+number r 0.2
+
+% ----------------------------
+
+point T_control 0 0 360 0
+getx t T_control
+point Or 0 0
+point Asr 0 -2
+
+rotate Ar Or t Asr
+getx Ax Ar
+gety Ay Ar
+
+% ---------------------------
+
+dim 140 100
+ang3d_picture 0 0 140 100
+ang3d_origin 70 50 pi_4 0.5
+ang3d_axes_drawing_range 0 0 0 0 0 0
+ang3d_drawsystem_p 3 1 1 1 2 2
+
+ang3d_point O 0 0 0
+ang3d_point A Ax 0 Ay
+ang3d_draw_parametric_surface u v
+{-pi;u<=pi;u+pi_8}
+{-pi_2;v<=pi_2;v+pi_8}
+{Ax + r * cos(u) * cos(v); r * sin(u) * cos(v); Ay + r * sin(v)}
+
+% --------------------------
+
+cmark_lb A
+trace A 200 30 30
+animation_frames 1200 60

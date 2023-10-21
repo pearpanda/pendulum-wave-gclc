@@ -1,0 +1,23 @@
+%% Arrange
+
+% Time control
+point T_control 0 0 360 0
+getx t T_control
+
+% Fixed points
+point O 70 90
+point Ao 70 20
+
+% Constructions
+rotate A O t Ao
+circle k O A
+
+%% Act
+
+cmark_rt O
+cmark_lb A
+drawsegment O A
+drawcircle k
+
+% Animation
+animation_frames 1200 60
