@@ -41,8 +41,40 @@ while { n < BrojKlatana }
 {
     expression BrojOscilacija[n] { BrojOscilacijaNajduzeg + n }
     expression Period[n] { GlobalniPeriod / BrojOscilacija[n] }
-    expression Duzina[n] { g * pow(Period[n] / (2 * pi), 2) }
+    expression Duzina[n] { g * pow(Period[n] / (2 * pi), 2) }    % Aproksimacija malih uglova
     expression n { n + 1 }
+}
+
+%% Simulacija - Ojler-Kromerova metoda
+
+% Vreme
+point Point_Vreme 0 0 frames 0
+getx t_Simulacije Point_Vreme
+
+% Simulacija
+array Ugao { BrojKlatana }
+array Brzina { BrojKlatana } % = 0
+
+% Inicijalizacija
+number k 0
+while { k < BrojKlatana }
+{
+    expression Ugao[k] { -UgaoAmplituda }
+    expression k { k + 1 }
+}
+
+% Korak
+number t 1
+while { t < t_Simulacije }
+{
+    number k 0
+    while { k < BrojKlatana }
+    {
+        expression Ubrzanje { - (g / Duzina[k]) * sin(Ugao[k]) }
+        expression Brzina[k] { Brzina[k] + Ubrzanje * dt }
+        expression Ugao[k] { Ugao[k] + Brzina[k] * dt }
+        expression k { k + 1 }
+    }
 }
 
 % %% Prostor za crtanje
@@ -74,16 +106,16 @@ while { n < BrojKlatana }
 %     expression duzina { g * pow(maliPeriod, 2) / (4, pow(pi, 2)) }
 % 
 %     array ugao { frames }
-%     array brzine { frames }
+%     array Brzina { frames }
 % 
 %     expression ugao[0] { ugao0 }
-%     number brzine[0] 0
+%     number Brzina[0] 0
 % 
 %     number f 1
 %     while { f < frames }
 %     {
-%         expression brzine[f] { brzine[f - 1] - g * sin(ugao[f - 1]) / duzina * dt }
-%         expression ugao[f] { ugao[f - 1] + brzine[f] * dt }
+%         expression Brzina[f] { Brzina[f - 1] - g * sin(ugao[f - 1]) / duzina * dt }
+%         expression ugao[f] { ugao[f - 1] + Brzina[f] * dt }
 %         expression f { f + 1 }
 %     }
 % 
