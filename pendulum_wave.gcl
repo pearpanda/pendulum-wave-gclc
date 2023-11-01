@@ -20,16 +20,18 @@ while { n <= 12 }
 
 number BrojKlatana 6
 number BrojPerioda 2
-number GlobalniPeriod 20
+number GlobalniPeriod 30
 number BrojOscilacijaNajduzeg 20
 number Rastojanje 1
-number FPS 30
+number FPS 24
 
 number UgaoAmplituda pi_frac[6]
 
 %% Izvođenja
 
-expression frames { BrojPerioda * GlobalniPeriod * FPS }
+expression frames { BrojPerioda * GlobalniPeriod * FPS }  % 1440
+point Point_Vreme 0 0 1440 0
+
 expression dt { 1 / FPS }
 
 array BrojOscilacija { BrojKlatana }
@@ -48,34 +50,58 @@ while { n < BrojKlatana }
 %% Simulacija - Ojler-Kromerova metoda
 
 % Vreme
-point Point_Vreme 0 0 frames 0
 getx t_Simulacije Point_Vreme
 
 % Simulacija
-array Ugao { BrojKlatana }
-array Brzina { BrojKlatana } % = 0
+procedure KlatnoOjlerKromer { Iteracija Ugao Brzina Duzina g dt }
+{
+    number t 1
+    while { t < Iteracija }
+    {
+        expression Ubrzanje { - (g / Duzina) * sin(Ugao) }
+        expression Brzina { Brzina + Ubrzanje * dt }
+        expression Ugao { Ugao + Brzina * dt }
+        expression t { t + 1 }
+    }
+}
 
-% Inicijalizacija
+%% Crtanje - 3D
+number X 240
+number Y 160
+
+expression X_C { X / 2 }
+expression Y_C { Y / 2 }
+
+dim X Y
+ang3d_picture 0 0 X Y
+ang3d_origin X_C Y_C 0 0
+ang3d_unit 30
+ang3d_axes_drawing_range 0 0 0 0 0 0
+ang3d_drawsystem_p 3 2 1 1 2 3
+
 number k 0
 while { k < BrojKlatana }
 {
-    expression Ugao[k] { -UgaoAmplituda }
+    number Ugao UgaoAmplituda
+    number Brzina 0
+
+    call KlatnoOjlerKromer { t_Simulacije Ugao Brzina Duzina[k] g dt }
+
+    expression x { Duzina[k] * cos(Ugao) }
+    expression y { k * Rastojanje }
+    expression z { -Duzina[k] * sin(Ugao) }
+
+    ang3d_point O 0 0 0
+    ang3d_point A x y z
+
+    drawsegment O A
+    cmark_lb A
+    cmark_rt O
+
     expression k { k + 1 }
 }
 
-% Korak
-number t 1
-while { t < t_Simulacije }
-{
-    number k 0
-    while { k < BrojKlatana }
-    {
-        expression Ubrzanje { - (g / Duzina[k]) * sin(Ugao[k]) }
-        expression Brzina[k] { Brzina[k] + Ubrzanje * dt }
-        expression Ugao[k] { Ugao[k] + Brzina[k] * dt }
-        expression k { k + 1 }
-    }
-}
+animation_frames frames FPS
 
 % %% Prostor za crtanje
 % dim 240 160
