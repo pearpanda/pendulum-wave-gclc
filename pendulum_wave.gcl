@@ -25,7 +25,7 @@ number BrojOscilacijaNajduzeg 20
 number Rastojanje 1
 number FPS 30
 
-expression UgaoAmplituda pi_frac[6]
+number UgaoAmplituda pi_frac[6]
 
 %% Izvođenja
 
