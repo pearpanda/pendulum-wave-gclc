@@ -1,0 +1,88 @@
+%%% Petar Nikic - Talasno Klatno
+
+%% Konstante
+
+number N 15
+number Period 60
+number FPS 60
+number numPerioda 2
+number inicijalnihOscilacija 51
+
+expression frames { Period * FPS * numPerioda }
+expression dt { 1 / FPS }
+
+% g
+number g 9.81
+
+% Pi
+number pi 3.141592653589793
+array pi_frac { 12 }
+
+number n 1
+while { n <= 12 }
+{
+    expression pi_frac[n] { pi / n }
+    expression n { n + 1 }
+}
+
+% Simulacija
+expression ugao0 { pi_frac[3] }
+
+%% Koeficijenti
+number length_coefficient 10
+number time_coefficient 0.4
+
+%% Prostor za crtanje
+dim 240 160
+
+% Analiticka geometrija (3D)
+ang3d_picture 0 0 240 160
+ang3d_origin 60 140 pi_frac[5] 0.5
+ang3d_unit 10
+ang3d_axes_drawing_range -8 8 -8 20 -8 8
+ang3d_drawsystem_p 3 1 1 1 1 1
+
+%% Vreme
+
+point T_main 0 0 frames 0
+getx t T_main
+
+%% Klatna
+number n 0
+while { n < N }
+{
+    expression y { N - n }
+
+    ang3d_point O 0 y 0
+    cmark_rt O
+
+    expression oscilacijaPeriod { inicijalnihOscilacija + n }
+    expression maliPeriod { Period / oscilacijaPeriod }
+    expression duzina { g * pow(maliPeriod, 2) / (4, pow(pi, 2)) }
+
+    array ugao { frames }
+    array brzine { frames }
+
+    expression ugao[0] { ugao0 }
+    number brzine[0] 0
+
+    number f 1
+    while { f < frames }
+    {
+        expression brzine[f] { brzine[f - 1] - g * sin(ugao[f - 1]) / duzina * dt }
+        expression ugao[f] { ugao[f - 1] + brzine[f] * dt }
+        expression f { f + 1 }
+    }
+
+    expression x { duzina * sin(ugao[t]) }
+    expression z { -duzina * cos(ugao[t]) }
+    ang3d_point A x y z
+    cmark_lb A
+    drawsegment O A
+    trace A 200 30 30
+
+    expression n { n + 1 }
+}
+
+animation_frames frames 60
+
