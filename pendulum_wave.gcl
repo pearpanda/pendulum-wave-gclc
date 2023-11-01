@@ -71,13 +71,11 @@ number Y 160
 
 expression X_C { X / 2 }
 expression Y_C { Y / 2 }
+expression Y_T { Y - (Y / 10) }
 
 dim X Y
-ang3d_picture 0 0 X Y
-ang3d_origin X_C Y_C 0 0
-ang3d_unit 60
-ang3d_axes_drawing_range 0 0 0 0 0 0
-ang3d_drawsystem_p 3 2 1 1 2 3
+point O_z 0 0
+point O X_C Y_T
 
 number k 0
 while { k < BrojKlatana }
@@ -86,13 +84,12 @@ while { k < BrojKlatana }
     number Brzina 0
 
     call KlatnoOjlerKromer { t_Simulacije Ugao Brzina Duzina[k] g dt }
+    expression UgaoDeg { (Ugao / pi) * 180 }
 
-    expression x { Duzina[k] * sin(Ugao) }
-    expression y { k * Rastojanje }
-    expression z { -Duzina[k] * cos(Ugao) }
-
-    ang3d_point O 0 0 0
-    ang3d_point A x y z
+    expression MinY { - Y * (Duzina[k] / 1.8) }
+    point A_zs 0 MinY
+    rotate A_z O_z UgaoDeg A_zs
+    translate A O_z O A_z
 
     drawsegment O A
     cmark_lb A
