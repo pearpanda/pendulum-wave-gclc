@@ -75,7 +75,7 @@ expression Y_C { Y / 2 }
 dim X Y
 ang3d_picture 0 0 X Y
 ang3d_origin X_C Y_C 0 0
-ang3d_unit 30
+ang3d_unit 60
 ang3d_axes_drawing_range 0 0 0 0 0 0
 ang3d_drawsystem_p 3 2 1 1 2 3
 
