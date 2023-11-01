@@ -87,9 +87,9 @@ while { k < BrojKlatana }
 
     call KlatnoOjlerKromer { t_Simulacije Ugao Brzina Duzina[k] g dt }
 
-    expression x { Duzina[k] * cos(Ugao) }
+    expression x { Duzina[k] * sin(Ugao) }
     expression y { k * Rastojanje }
-    expression z { -Duzina[k] * sin(Ugao) }
+    expression z { -Duzina[k] * cos(Ugao) }
 
     ang3d_point O 0 0 0
     ang3d_point A x y z
