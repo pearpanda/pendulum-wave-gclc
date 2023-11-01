@@ -27,6 +27,8 @@ number FPS 24
 
 number UgaoAmplituda pi_frac[6]
 
+number CircleRadius 3
+
 %% Izvođenja
 
 expression frames { BrojPerioda * GlobalniPeriod * FPS }  % 1152
@@ -75,7 +77,45 @@ expression Y_T { Y - (Y / 10) }
 
 dim X Y
 point O_z 0 0
+point O_circle CircleRadius 0
 point O X_C Y_T
+cmark_rt O
+
+procedure GetColor { hue R G B }
+{
+    expression h60 { hue / 60 }
+    expression X { 1 - abs((h60 - floor(h60 / 2) * 2) - 1) }
+
+    if_then_else { hue < 60 } {
+        number R 1
+        number G X
+        number B 0
+    } {if_then_else { hue < 120 } {
+        number R X
+        number G 1
+        number B 0
+    } {if_then_else { hue < 180 } {
+        number R 0
+        number G 1
+        number B X
+    } {if_then_else { hue < 240 } {
+        number R 0
+        number G X
+        number B 1
+    } {if_then_else { hue < 300 } {
+        number R X
+        number G 0
+        number B 1
+    } {
+        number R 1
+        number G 0
+        number B X
+    }}}}}
+
+    expression R { 255 * R }
+    expression G { 255 * G }
+    expression B { 255 * B }
+}
 
 number k 0
 while { k < BrojKlatana }
@@ -90,10 +130,17 @@ while { k < BrojKlatana }
     point A_zs 0 MinY
     rotate A_z O_z UgaoDeg A_zs
     translate A O_z O A_z
+    translate A_circle O_z O_circle A
+
+    circle circ A A_circle
 
     drawsegment O A
-    cmark_lb A
-    cmark_rt O
+
+    expression hue { 360 * k / BrojKlatana }
+    call GetColor { hue R G B }
+    color R G B
+    fillcircle circ
+    color 0 0 0
 
     expression k { k + 1 }
 }
