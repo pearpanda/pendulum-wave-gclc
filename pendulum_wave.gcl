@@ -18,12 +18,12 @@ while { n <= 12 }
 
 %% Konfiguracija
 
-number BrojKlatana 6
+number BrojKlatana 15
 number BrojPerioda 1.2
-number GlobalniPeriod 40
+number GlobalniPeriod 45
 number BrojOscilacijaNajduzeg 20
 number Rastojanje 1
-number FPS 24
+number FPS 60
 
 number UgaoAmplituda pi_frac[6]
 
@@ -32,7 +32,7 @@ number CircleRadius 3
 %% Izvođenja
 
 expression frames { BrojPerioda * GlobalniPeriod * FPS }  % 1152
-point Point_Vreme 0 0 1152 0
+point Point_Vreme 0 0 54 0
 
 expression dt { 1 / FPS }
 
@@ -52,19 +52,12 @@ while { n < BrojKlatana }
 %% Simulacija - Ojler-Kromerova metoda
 
 % Vreme
-getx t_Simulacije Point_Vreme
+getx t Point_Vreme
 
 % Simulacija
-procedure KlatnoOjlerKromer { Iteracija Ugao Brzina Duzina g dt }
+procedure KlatnoPutujuciTalas { t k pi UgaoAmplituda Period Ugao }
 {
-    number t 1
-    while { t < Iteracija }
-    {
-        expression Ubrzanje { - (g / Duzina) * sin(Ugao) }
-        expression Brzina { Brzina + Ubrzanje * dt }
-        expression Ugao { Ugao + Brzina * dt }
-        expression t { t + 1 }
-    }
+    expression Ugao { UgaoAmplituda * cos((2 * pi) / Period * t) }
 }
 
 %% Crtanje - 3D
@@ -121,9 +114,8 @@ number k 0
 while { k < BrojKlatana }
 {
     number Ugao UgaoAmplituda
-    number Brzina 0
 
-    call KlatnoOjlerKromer { t_Simulacije Ugao Brzina Duzina[k] g dt }
+    call KlatnoPutujuciTalas { t k pi UgaoAmplituda Period[k] Ugao }
     expression UgaoDeg { (Ugao / pi) * 180 }
 
     expression MinY { - Y * (Duzina[k] / 1.8) }
