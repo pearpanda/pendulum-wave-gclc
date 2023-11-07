@@ -19,7 +19,7 @@ while { n <= 12 }
 %% Konfiguracija
 
 number BrojKlatana 15
-number BrojPerioda 1.2
+number BrojPerioda 2
 number GlobalniPeriod 45
 number BrojOscilacijaNajduzeg 20
 number Rastojanje 1
