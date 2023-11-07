@@ -110,6 +110,8 @@ procedure GetColor { hue R G B }
     expression B { 255 * B }
 }
 
+background 50 120 50
+
 number k 0
 while { k < BrojKlatana }
 {
